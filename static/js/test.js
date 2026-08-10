@@ -70,6 +70,7 @@ function iniciarCuentaRegresiva() {
     }, 1000);
 }
 
+// Muestra un recuadro al finalizar la prueba
 function finalizarPrueba() {
     if (pruebaTerminada) {
         return;
@@ -79,13 +80,40 @@ function finalizarPrueba() {
     clearInterval(intervalo);
     entrada.disabled = true;
 
+    // Mensaje del resultado
+    const lblMensaje = document.getElementById("tarjeta-mensaje");
+
+    // Imagenes a mostrar
+    const imagenCaracol = document.getElementById("imgSnail");
+    const imagenLiebre = document.getElementById("imgHare");
+    const imagenCheetah = document.getElementById("imgCheetah");
+
+    // Variables para resultados
     const segundosUsados = DURACION_SEGUNDOS - tiempoRestante;
     const minutos = segundosUsados > 0 ? segundosUsados / 60 : 1 / 60;
     const palabrasPorMinuto = Math.round(palabrasCorrectas / minutos);
 
+    // Habilita una imagen dependiendo de los resultados
+    if(palabrasPorMinuto < 30){
+        imagenCaracol.style.display = "flex";
+        lblMensaje.innerText = "You're too slow!";
+    }
+    
+    if(palabrasPorMinuto >= 30 && palabrasPorMinuto < 60){
+        imagenLiebre.style.display = "flex";
+        lblMensaje.innerText = "Nada mal cadete.";
+    }
+    
+    if(palabrasPorMinuto >= 60){
+        imagenCheetah.style.display = "flex";
+        lblMensaje.innerText = "SONIC SPEED!";
+    }
+
+    // Resultados de la prueba
     valorWpm.textContent = palabrasPorMinuto;
     pantallaResultado.classList.add("visible");
 
+    // Guardar resultados
     fetch("/guardar_resultado", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -470,11 +470,26 @@ h1 {
     background: rgba(10, 12, 18, 0.85);
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 
 .pantalla-resultado.visible {
     display: flex;
     animation: entrada 0.25s ease both;
+}
+
+.tarjeta-contenedor-imagen{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tarjeta-imagen{
+    width: 8rem;
+    aspect-ratio: 1/1;
+    border-radius: var(--radio);
+
+    display: none;
 }
 
 .tarjeta-resultado {

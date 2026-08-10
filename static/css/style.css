@@ -363,16 +363,20 @@ h1 {
 
 .nombre-archivo {
     font-family: var(--fuente-mono);
-    font-size: 13px;
+    font-size: 1.4rem;
     color: var(--texto-tenue);
     flex: 1;
 }
 
 .tiempo {
     font-family: var(--fuente-mono);
-    font-size: 14px;
-    color: var(--advertencia);
+    font-size: 2rem;
+    color: var(--borde);
+    border-radius: var(--radio);
+    background-color: var(--advertencia);
     font-weight: 700;
+
+    padding: 0.2rem 0.6rem;
 }
 
 .cuerpo-terminal {

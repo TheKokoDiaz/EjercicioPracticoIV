@@ -381,7 +381,9 @@ h1 {
 
 .cuerpo-terminal {
     padding: 32px;
-    min-height: 180px;
+    height: 6rem;
+    
+    overflow-y: scroll;
 }
 
 .texto-prueba {

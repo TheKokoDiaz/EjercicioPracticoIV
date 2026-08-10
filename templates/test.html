@@ -2,6 +2,8 @@
 {% block titulo %}Prueba de mecanografía{% endblock %}
 {% block contenido %}
 
+<div id="lblcombo" class="combo">Combo x 0</div>
+
 <div class="ventana-terminal animar-entrada">
     <div class="barra-terminal">
         <div class="puntos">
@@ -38,6 +40,8 @@
         </p>
         
         <p id="tarjeta-mensaje" class="etiqueta-resultado"></p>
+        
+        <p id="combo-resultado" class="tarjeta-combo">Mayor combo: 0</p>
 
         <a href="{{ url_for('menu') }}" class="boton boton-principal">Volver al menú</a>
     </div>

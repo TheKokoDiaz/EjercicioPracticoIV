@@ -10,6 +10,8 @@ const valorWpm = document.getElementById("valor-wpm");
 
 const DURACION_SEGUNDOS = 60;
 
+let combo = 0;
+let higherCombo = 0;
 let indiceActual = 0;
 let palabrasCorrectas = 0;
 let tiempoRestante = DURACION_SEGUNDOS;
@@ -80,8 +82,9 @@ function finalizarPrueba() {
     clearInterval(intervalo);
     entrada.disabled = true;
 
-    // Mensaje del resultado
+    // Mensaje del resultado y combo
     const lblMensaje = document.getElementById("tarjeta-mensaje");
+    const lblResultadoCombo = document.getElementById("combo-resultado");
 
     // Imagenes a mostrar
     const imagenCaracol = document.getElementById("imgSnail");
@@ -111,6 +114,7 @@ function finalizarPrueba() {
 
     // Resultados de la prueba
     valorWpm.textContent = palabrasPorMinuto;
+    lblResultadoCombo.innerText = "Combo más alto: " + higherCombo;
     pantallaResultado.classList.add("visible");
 
     // Guardar resultados
@@ -141,9 +145,14 @@ function procesarPalabra() {
         elementoActual.classList.toggle("incorrecta", !esCorrecta);
 
         if (esCorrecta && !elementoActual.dataset.contada) {
+            combo += 1;
             palabrasCorrectas += 1;
             elementoActual.dataset.contada = "1";
+        } else {
+            combo = 0;
         }
+
+        dibujarCombo();
     }
 
     indiceActual += 1;
@@ -156,6 +165,31 @@ function procesarPalabra() {
     }
 
     marcarPalabraActual();
+}
+
+// Incrementar combos
+function dibujarCombo(){
+    const lblcombo = document.getElementById("lblcombo");
+
+    if(combo < 4){
+        lblcombo.className = "combo";
+        lblcombo.innerText = "Combo x " + combo;
+    }
+    
+    if(combo >= 4 && combo < 15){
+        lblcombo.className = "combo amazing";
+        lblcombo.innerText = "¡Combo x " + combo + "!";
+    }
+    
+    if(combo >= 15){
+        lblcombo.className = "combo fire";
+        lblcombo.innerText = "¡¡COMBO X " + combo + "!!";
+    }
+
+    if(combo > higherCombo){
+        higherCombo = combo;
+    }
+
 }
 
 // Permite volver a la palabra anterior si quedo marcada como incorrecta

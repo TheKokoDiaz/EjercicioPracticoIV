@@ -13,6 +13,7 @@
     --radio: 10px;
     --fuente-mono: "JetBrains Mono", monospace;
     --fuente-texto: "Inter", sans-serif;
+    --fuente-combo: "Pixelify Sans";
 }
 
 * {
@@ -320,6 +321,38 @@ h1 {
     margin: 0;
 }
 
+/* Mensaje para palabras correctas consecutivas */
+.combo{
+    font-size: 1.6rem;
+    text-align: center;
+    color: var(--texto-tenue);
+    font-family: var(--fuente-combo);
+    
+    margin-bottom: 1rem;
+}
+
+.amazing{
+    font-size: 2rem;
+    animation: amazing 0.8s infinite;
+}
+
+.fire{
+    font-size: 2.4rem;
+    animation: fire 0.25s infinite;
+}
+
+@keyframes amazing {
+    0%{color: var(--advertencia);}
+    50%{color: var(--texto-tenue);}
+    100%{color: var(--advertencia);}
+}
+
+@keyframes fire {
+    0%{color: var(--advertencia);}
+    50%{color: var(--error);}
+    100%{color: var(--advertencia);}
+}
+
 /* Ventana terminal para la prueba de escritura */
 
 .ventana-terminal {
@@ -382,7 +415,7 @@ h1 {
 .cuerpo-terminal {
     padding: 32px;
     height: 6rem;
-    
+
     overflow-y: scroll;
 }
 
@@ -506,7 +539,7 @@ h1 {
     text-align: center;
 }
 
-.etiqueta-resultado {
+.etiqueta-resultado, .tarjeta-combo {
     color: var(--texto-tenue);
     margin: 0;
 }

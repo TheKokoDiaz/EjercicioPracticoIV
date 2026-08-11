@@ -8,6 +8,8 @@ from werkzeug.utils import secure_filename
 
 from config import get_connection
 
+from datetime import datetime, timedelta
+
 app = Flask(__name__)
 app.secret_key = "cambia-esta-clave-por-una-propia-y-segura"
 
@@ -36,6 +38,10 @@ def login():
     return render_template("login.html")
 
 
+MAX_INTENTOS_FALLIDOS = 4
+TIEMPO_BLOQUEO_MINUTOS = 15
+
+
 @app.route("/login", methods=["POST"])
 def procesar_login():
     usuario = request.form.get("usuario", "").strip()
@@ -46,17 +52,52 @@ def procesar_login():
         with conexion.cursor() as cursor:
             cursor.execute("SELECT * FROM Usuario WHERE usuario = %s", (usuario,))
             fila = cursor.fetchone()
+
+            if not fila:
+                flash("Usuario o contraseña incorrectos")
+                return redirect(url_for("login"))
+
+            # Si la cuenta está bloqueada, revisa si ya pasó el tiempo de bloqueo
+            if fila["bloqueado_hasta"] and fila["bloqueado_hasta"] > datetime.now():
+                minutos_restantes = int((fila["bloqueado_hasta"] - datetime.now()).total_seconds() // 60) + 1
+                flash(f"Cuenta bloqueada. Intenta de nuevo en {minutos_restantes} minuto(s)")
+                return redirect(url_for("login"))
+
+            if check_password_hash(fila["contrasena"], contrasena):
+                # Login correcto: resetea los intentos fallidos
+                cursor.execute(
+                    "UPDATE Usuario SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id = %s",
+                    (fila["id"],),
+                )
+                conexion.commit()
+
+                session["usuario_id"] = fila["id"]
+                session["usuario"] = fila["usuario"]
+                return redirect(url_for("menu"))
+
+            # Login incorrecto: incrementa intentos fallidos
+            nuevos_intentos = fila["intentos_fallidos"] + 1
+
+            if nuevos_intentos >= MAX_INTENTOS_FALLIDOS:
+                bloqueado_hasta = datetime.now() + timedelta(minutes=TIEMPO_BLOQUEO_MINUTOS)
+                cursor.execute(
+                    "UPDATE Usuario SET intentos_fallidos = %s, bloqueado_hasta = %s WHERE id = %s",
+                    (nuevos_intentos, bloqueado_hasta, fila["id"]),
+                )
+                conexion.commit()
+                flash(f"Cuenta bloqueada por {TIEMPO_BLOQUEO_MINUTOS} minutos tras varios intentos fallidos")
+            else:
+                cursor.execute(
+                    "UPDATE Usuario SET intentos_fallidos = %s WHERE id = %s",
+                    (nuevos_intentos, fila["id"]),
+                )
+                conexion.commit()
+                flash("Usuario o contraseña incorrectos")
+
     finally:
         conexion.close()
 
-    if fila and check_password_hash(fila["contrasena"], contrasena):
-        session["usuario_id"] = fila["id"]
-        session["usuario"] = fila["usuario"]
-        return redirect(url_for("menu"))
-
-    flash("Usuario o contraseña incorrectos")
     return redirect(url_for("login"))
-
 
 @app.route("/registro", methods=["GET", "POST"])
 def registro():

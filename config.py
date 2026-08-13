@@ -3,11 +3,11 @@ from pymysql.cursors import DictCursor
 
 # Ajusta estos datos segun tu instalacion de MySQL
 DB_CONFIG = {
-    "host": "localhost",
+    "host": "interchange.proxy.rlwy.net",
     "user": "root",
-    "password": "root",
-    "database": "mecanografia_db",
-    "port": 3306,
+    "password": "TtBGjcWEKxncFyHplxzbayHbbhtGextx",
+    "database": "railway",
+    "port": 19602,
     "cursorclass": DictCursor,
 }
 
